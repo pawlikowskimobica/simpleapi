@@ -1,6 +1,7 @@
 from django.db import models
 import hashlib
 import random,string
+from django.core.exceptions import ValidationError
 
 class Client(models.Model):
     token=models.CharField(max_length=64,unique=True,default=''.join(random.choice(string.ascii_letters + string.digits) for i in range(64)))
