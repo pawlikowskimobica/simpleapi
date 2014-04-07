@@ -16,7 +16,10 @@ class PairView(View):
     def post(self, request, *args, **kwargs):
         status=True
         client=Client.objects.get(token=request.POST.get('token',''))
-        pair=Pair(client=client,key=request.POST.get('key',''),value=request.POST.get('value',''))
+        tuplePair=Pair.objects.get_or_create(client=client,key=request.POST.get('key',''))
+        pair=tuplePair[0]
+        pair.value=request.POST.get('value','')
+        # pair=Pair(client=client,key=request.POST.get('key',''),value=request.POST.get('value',''))
         try:
             pair.save()
         except Exception, e:
@@ -34,7 +37,3 @@ class PairView(View):
             data = serializers.serialize('json',pairs, indent=2,)
         return HttpResponse(data, mimetype='application/json')
     
-    # def dispatch(self, request, *args, **kwargs):
-    #     if request.method == 'POST' and 'key','token','value' in request.POST:
-    #         return writePair(self, request, *args, **kwargs):
-    #     return super(PairView, self).dispatch(request, *args, **kwargs)
