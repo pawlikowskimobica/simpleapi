@@ -48,7 +48,10 @@ class PairView(View):
         except Exception, e:
             return HttpResponse(status=401) #Token is not correct. Client does not exist.
         if 'key' in request.GET:
-            pair=Pair.objects.get(client=client,key=request.GET.get('key',''))
+            try:
+                pair=Pair.objects.get(client=client,key=request.GET.get('key',''))
+            except Exception, e:
+                return HttpResponse(status=404) #Key does not exist.
             data = simplejson.dumps({'value': pair.value})
         else:
             pairs=Pair.objects.filter(client=client)
